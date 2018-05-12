@@ -1,0 +1,14 @@
+msgid "Dialing %s"
+msgstr "Wähle %s"
+
+msgid "Started"
+msgstr "Gestartet"
+
+msgid "Disconnected"
+msgstr "Verbindung beendet"
+
+msgid "Please enter a phone number"
+msgstr "Bitte wählen Sie eine Telefonnummer"
+
+msgid "Incoming call"
+msgstr "Anruf"
