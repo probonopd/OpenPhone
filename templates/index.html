@@ -28,6 +28,7 @@ button {
 <h1>OpenPhone</h1>
 <div style="white-space:nowrap;">
 <p>
+  <!-- See https://www.w3schools.com/css/css3_buttons.asp for button styling -->
   <button id=result style="width: 100%; background-color: #e7e7e7; color: black; cursor: not-allowed;"></button>
   <br>
 
@@ -51,6 +52,7 @@ button {
 </div>
 
 <script>
+// Have buttons make AJAX requests
 $("button").click(function() {
   // alert(this.id);
   $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
@@ -61,6 +63,29 @@ $("button").click(function() {
   });
   return false;
 });
+
+// Bind key presses to buttons
+$(document).on('keydown', function(e) {
+    var tag = e.target.tagName.toLowerCase();
+    console.log(e.which);
+    if (e.which === 48) $('#0').click();
+    if (e.which === 49) $("#1").click();
+    if (e.which === 50) $("#2").click();
+    if (e.which === 51) $('#3').click();
+    if (e.which === 52) $("#4").click();
+    if (e.which === 53) $("#5").click();
+    if (e.which === 54) $('#6').click();
+    if (e.which === 55) $("#7").click();
+    if (e.which === 56) $("#8").click();
+    if (e.which === 57) $('#9').click();
+    if (e.which === 42) $("#*").click();
+    if (e.which === 35) $("##").click();
+    if (e.which === 13) $("#Dial").click();    // Enter
+    if (e.which === 112) $("#Pause").click();  // p
+    if (e.which === 27) $("#Hangup").click(); // esc
+    if (e.which === 8) $("#Delete").click(); // h
+});
+
 </script>
 
 </body>
