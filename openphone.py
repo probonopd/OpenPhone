@@ -127,6 +127,7 @@ def stop_sounds():
     # mpd.pause()
     global wav_slot
     print("stop_sounds running")
+    
     try:
         pj.Lib.instance().conf_disconnect(wav_slot, 0)
     except:
@@ -391,6 +392,7 @@ class MyCallCallback(pj.CallCallback):
 
     def __init__(self, call=None):
         pj.CallCallback.__init__(self, call)
+        lib.thread_register("python worker")
 
     # Notification when call state has changed
     def on_state(self):
@@ -424,6 +426,8 @@ class MyCallCallback(pj.CallCallback):
                 wav_player_id=pj.Lib.instance().create_player(str(tone_file),loop=True)
                 wav_slot=pj.Lib.instance().player_get_slot(wav_player_id)
                 pj.Lib.instance().conf_connect(wav_slot, 0)
+            elif(self.call.info().last_code == 200):
+                stop_sounds()
 
         if self.call.info().state == pj.CallState.DISCONNECTED:
             current_call = None
