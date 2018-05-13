@@ -1,5 +1,7 @@
-<html>
-<head>
+{% extends 'base.html' %}
+
+{% block content %}
+
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="{{
   url_for('static', filename='jquery.js') }}">\x3C/script>')
@@ -23,9 +25,7 @@ button {
   height: 70px;
 }
 </style>
-</head>
-<body>
-<h1>OpenPhone</h1>
+
 <div style="white-space:nowrap;">
 <p>
   <!-- See https://www.w3schools.com/css/css3_buttons.asp for button styling -->
@@ -67,7 +67,7 @@ $("button").click(function() {
 // Bind key presses to buttons
 $(document).on('keydown', function(e) {
     var tag = e.target.tagName.toLowerCase();
-    console.log(e.which);
+    // console.log(e.which);
     if (e.which === 48) $('#0').click();
     if (e.which === 49) $("#1").click();
     if (e.which === 50) $("#2").click();
@@ -88,5 +88,4 @@ $(document).on('keydown', function(e) {
 
 </script>
 
-</body>
-</html>
+{% endblock %}
