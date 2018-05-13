@@ -30,7 +30,7 @@
 - [x] Play ringtone when we answer the incoming call with 180/Ringing
 - [x] Play ringback tone (in Germany according to the 1TR110 standard)
 - [x] Play busy tone (in Germany according to the 1TR110 standard)
-- [ ] Play dialtone (in Germany according to the 1TR110 standard)
+- [x] Play dialtone (in Germany according to the 1TR110 standard)
 
 ## Phone number lookup
 
