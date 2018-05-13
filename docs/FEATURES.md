@@ -1,5 +1,9 @@
 # Features
 
+## System
+
+- [ ] Make system read-only so that it survives power losses without corruption (ideally in a setup like OpenWrt)
+
 ## Audio
 
 - [ ] Run amixer to set initial volume
@@ -19,6 +23,7 @@
 - [ ] Clear text meaning of SIP codes in display https://de.wikipedia.org/wiki/SIP-Status-Codes
 - [ ] Automatically dial (by just entering numbers and nothing else like on an analog/ISDN phone)
 - [ ] Print each missed call on paper or put it on web interface or read it out aloud
+- [ ] Web interface
 
 ## Ringtones
 
