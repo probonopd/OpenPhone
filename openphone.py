@@ -5,6 +5,7 @@ debug = True
 
 import os, sys, threading, time, gettext, re
 from flask import Flask, jsonify, render_template, request  # apt install python-flask
+from flask_bootstrap import Bootstrap # python -m pip install flask-bootstrap
 import atexit
 import wave # apt install python-pyaudio
 
@@ -34,6 +35,7 @@ t.install()
 _ = t.gettext
 
 app = Flask(__name__)
+Bootstrap(app)
 
 cx300 = None
 keyb = None
@@ -554,6 +556,5 @@ if __name__ == "__main__":
         cx300_listen_keys()
 
     speak(_("Started"))
-
     app.run(host='0.0.0.0', port=80)
 
