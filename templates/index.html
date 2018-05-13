@@ -16,10 +16,52 @@
     });
   });
 </script>
+<style>
+button {
+  font-size: 24px;
+  width: 33%;
+  height: 70px;
+}
+</style>
 </head>
+<body>
 <h1>OpenPhone</h1>
-<p><input type=text size=5 name=a> +
-   <input type=text size=5 name=b> =
-   <span id=result>?</span>
-<p><a href=# id=calculate>calculate server side</a>
+<div style="white-space:nowrap;">
+<p>
+  <button id=result style="width: 100%; background-color: #e7e7e7; color: black; cursor: not-allowed;"></button>
+  <br>
+
+  <button id=Redial>Redial</button><button id=Pause>Pause</button><button id=Delete>Delete</button>
+  <br>
+
+  <button id=1>1</button><button id=2>2</button><button id=3>3</button>
+  <br>
+
+  <button id=4>4</button><button id=5>5</button><button id=6>6</button>
+  <br>
+
+  <button id=7>7</button><button id=8>8</button><button id=9>9</button>
+  <br>
+
+  <button id=*>*</button><button id=0>0</button><button id=#>#</button>
+  <br>
+
+  <button id="Dial" style="background-color: #4CAF50; width:50%;">Dial</button><button id="Hangup" style="background-color: #f44336; width:50%;">Hangup</button>
+</p>
+</div>
+
+<script>
+$("button").click(function() {
+  // alert(this.id);
+  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+  $.getJSON($SCRIPT_ROOT + '/_button', {
+    button: this.id,
+  }, function(data) {
+    $("#result").text(data.result);
+  });
+  return false;
+});
+</script>
+
+</body>
 </html>

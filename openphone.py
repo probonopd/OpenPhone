@@ -86,9 +86,7 @@ class DelegateForCX300:
         elif(key==13):
             pass # TODO: Hold
         elif(key==14):
-            number_to_be_dialed.pop()
-            if(cx300):
-                cx300.display_two_lines("".join(number_to_be_dialed))
+            delete_pressed()
         else:
             handleKeypress(str(key))
     def long_press(self, key):
@@ -108,6 +106,11 @@ atexit.register(shutdown)
 #
 # What should happen when certain phone functionality is invoked 
 #
+
+def delete_pressed():
+    number_to_be_dialed.pop()
+    if(cx300):
+        cx300.display_two_lines("".join(number_to_be_dialed))
 
 def alarm(message):
     print("ALARM: %s" % (message))
@@ -271,15 +274,28 @@ def keyboard_listen_keys():
 # Web interface
 #
 
-@app.route('/_add_numbers')
-def add_numbers():
-    a = request.args.get('a', 0, type=int)
-    b = request.args.get('b', 0, type=int)
-    return jsonify(result=a + b)
-
 @app.route('/')
 def index():
     return render_template('index.html')
+
+# TODO: Secure this in some form or shape
+# so that not anyone on the local network can access this
+@app.route('/_button')
+def _button():
+    """A button has been clicked in the web interface"""
+    button = request.args.get('button', 0, type=str)
+    print("Button: %s" % (button))
+    if(button=="Delete"):
+        delete_pressed()
+    elif(button=="Dial"):
+        offhook()
+    elif(button=="Redial"):
+        redial()
+    elif(button=="Hangup"):
+        onhook()
+    elif(button in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "#"]):
+        handleKeypress(str(button))
+    return jsonify(result="".join(number_to_be_dialed))
 
 #
 # pjsip functions
