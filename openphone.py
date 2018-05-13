@@ -1,50 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Features; d = done
-# Run amixer to set initial volume
-# d Read from CX300 keyboard
-# Read from generic keyboard
-# Read from IR remote control
-# d Write to CX300 display
-# Write to i2c display
-# Clear text meaning of SIP codes in display
-#   https://de.wikipedia.org/wiki/SIP-Status-Codes
-# d Play ringtone when we answer the incoming call with 180/Ringing
-# d Play ringback tone (in Germany according to the 1TR110 standard)
-# d Play busy tone (in Germany according to the 1TR110 standard)
-# Play dialtone (in Germany according to the 1TR110 standard)
-# Automatically dial (by just entering numbers and nothing else like on an analog/ISDN phone)
-# d Reverse search in telefonbuch.de https://github.com/mhvuze/RaspiMeetsWorkflow/blob/master/tb.py
-#   https://www.dastelefonbuch.de/R%C3%BCckw%C3%A4rts-Suche/08003303000
-# Reverse search in local address book
-# d If we don't find a match, identify at least the city
-# Show calling number and reverse information on screen
-# d Get vocalizations on the fly and cache them, e.g., from
-#   sudo apt-get install libttspico-utils
-#   pico2wave --lang=de-DE -w lookdave.wav "Anruf mit unterdrückter Rufnummer" && aplay lookdave.wav -D "plughw:CARD=CX300,DEV=0"
-#   http://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=Anruf%20von%20einer%20unbekannten%20Nummer&tl=de
-#   http://mary.dfki.de:59125/process?INPUT_TYPE=TEXT&OUTPUT_TYPE=AUDIO&INPUT_TEXT=Anruf%20von%20Johannes&OUTPUT_TEXT=&effect_Volume_selected=&effect_Volume_parameters=amount%3A2.0%3B&effect_Volume_default=Default&effect_Volume_help=Help&effect_TractScaler_selected=&effect_TractScaler_parameters=amount%3A1.5%3B&effect_TractScaler_default=Default&effect_TractScaler_help=Help&effect_F0Scale_selected=&effect_F0Scale_parameters=f0Scale%3A2.0%3B&effect_F0Scale_default=Default&effect_F0Scale_help=Help&effect_F0Add_selected=&effect_F0Add_parameters=f0Add%3A50.0%3B&effect_F0Add_default=Default&effect_F0Add_help=Help&effect_Rate_selected=&effect_Rate_parameters=durScale%3A1.5%3B&effect_Rate_default=Default&effect_Rate_help=Help&effect_Robot_selected=&effect_Robot_parameters=amount%3A100.0%3B&effect_Robot_default=Default&effect_Robot_help=Help&effect_Whisper_selected=&effect_Whisper_parameters=amount%3A100.0%3B&effect_Whisper_default=Default&effect_Whisper_help=Help&effect_Stadium_selected=&effect_Stadium_parameters=amount%3A100.0&effect_Stadium_default=Default&effect_Stadium_help=Help&effect_Chorus_selected=&effect_Chorus_parameters=delay1%3A466%3Bamp1%3A0.54%3Bdelay2%3A600%3Bamp2%3A-0.10%3Bdelay3%3A250%3Bamp3%3A0.30&effect_Chorus_default=Default&effect_Chorus_help=Help&effect_FIRFilter_selected=&effect_FIRFilter_parameters=type%3A3%3Bfc1%3A500.0%3Bfc2%3A2000.0&effect_FIRFilter_default=Default&effect_FIRFilter_help=Help&effect_JetPilot_selected=&effect_JetPilot_parameters=&effect_JetPilot_default=Default&effect_JetPilot_help=Help&HELP_TEXT=&exampleTexts=&VOICE_SELECTIONS=bits3-hsmm%20de%20male%20hmm&AUDIO_OUT=WAVE_FILE&LOCALE=de&VOICE=bits3-hsmm&AUDIO=WAVE_FILE
-# Play it back spoken as part of the ringtone -- killer feature! "Call from Munich"
-# d Say each number during dialing
-# Make volume settable, including extra volume from pjsip
-# Implement physical quick dial keys
-# Print each missed call on paper or put it on web interface or read it out aloud
-# Automatically warn if a number has a high Tellows score; cache Tellows results for a certain time
-#   http://www.tellows.de/basic/num/004932214219001?json=1&partner=test&apikey=test123
-# Webradio
-# Automatically mute (using IR) the TV and radio in the room when call comes in
-# Use SRTP and TLS (easybell supports it)
-# d Say reversed number when dialing it
-# Immediately answer internal calls (optionally)
-# Presence, https://github.com/chakrit/pjsip/blob/master/pjsip-apps/src/python/samples/presence.py
-# Tell who had called when user was not here
-# d Use Fritz!Box phonebook https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/X_contactSCPD.pdf
-
 debug = True
 
 import os, sys, threading, time, gettext, re
-from flask import Flask  # apt install python-flask
+from flask import Flask, jsonify, render_template, request  # apt install python-flask
 import atexit
 import wave # apt install python-pyaudio
 
@@ -52,7 +12,9 @@ import pjsua as pj
 
 LOG_LEVEL=5
 current_call = None
+
 wav_slot = None # The slot on which ringtones etc. are played
+
 # For Neopixels
 import spidev
 import ws2812
@@ -309,9 +271,15 @@ def keyboard_listen_keys():
 # Web interface
 #
 
-@app.route("/")
-def hello():
-    return "<h1>OpenPhone</h1>"
+@app.route('/_add_numbers')
+def add_numbers():
+    a = request.args.get('a', 0, type=int)
+    b = request.args.get('b', 0, type=int)
+    return jsonify(result=a + b)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 #
 # pjsip functions
