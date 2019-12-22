@@ -1,10 +1,12 @@
 # Installation
 
-This page describes the installation of OpenPhone on an Orange Pi Zero. It may run on other hardware as well, such as Raspberr Pi, but this has not been tested yet. Feel free to send pull requests to improve and expand this documentation. __TODO:__ Nake fully embedded images using OpenWrt or MiZy or something else.
+This page describes the installation of OpenPhone on an Orange Pi Zero. It may run on other hardware as well, such as Raspberr Pi, but this has not been tested yet. Feel free to send pull requests to improve and expand this documentation. __TODO:__ Make fully embedded images using OpenWrt or MiZy or something else.
 
 ## Install Armbian
 
 Download and install **[Armbian](https://www.armbian.com/orange-pi-zero/)** for Orange Pi Zero to a microSD card. You can use [Etcher](https://etcher.io) to write the filesystem image to a 8 GB microSD card.
+
+Optionally make it read-only using overlayroot as described [here](https://gist.github.com/probonopd/97f6826cc5aa3c0c0950682b0bc266bc). In this case don't forget to chroot into the rw system before executing the following steps.
 
 ## Install dependencies
 
