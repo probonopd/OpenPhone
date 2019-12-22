@@ -10,8 +10,15 @@ Optionally make it read-only using overlayroot as described [here](https://gist.
 
 ## Enable SPI
 
-add my user to spi group
-enable SPI interface through raspi-config
+Need to enable overlays for SPI and audio
+
+```
+nano /boot/armbianEnv.txt
+# Make sure we have:
+overlays=analog-codec i2c0 spi-spidev uart1 uart2 usbhost2 usbhost3
+param_spidev_spi_bus=1
+param_spidev_max_freq=100000000
+```
 
 ## Install dependencies
 
@@ -24,8 +31,6 @@ apt update
 apt -y install git libttspico-utils python-dev python-lxml python-requests python-flask python-pyaudio mpd python-mpd python-configparser python-pip python-setuptools libhidapi-libusb0
 sudo pip install wheel
 sudo pip install flask-bootstrap
-sudo pip install spidev
-# sudo pip install ws2812
 sudo pip install hid
 ```
 
@@ -40,6 +45,20 @@ cd OpenPhone
 # Get _pjsua.so and pjsua.py from https://github.com/probonopd/pjsua-static/releases and put into this directory
 wget https://raw.githubusercontent.com/joosteto/ws2812-spi/master/ws2812.py
 ```
+
+Then, install the SPI stuff for Neopixels:
+```
+git clone https://github.com/doceme/py-spidev.git
+cd py-spidev
+make -j4
+make install
+cd ..
+git clone https://github.com/joosteto/ws2812-spi.git
+find ws2812-spi/ -type f -name '*.py' -exec sed -i -e 's|spi.open(0,0)|spi.open(1,0)|g' {} \;
+find ws2812-spi/ -type f -name '*.py' -exec sed -i -e 's|tx=\[\]|tx=\[0x00\]|g' {} \;
+```
+
+Details are on https://gist.github.com/probonopd/97f6826cc5aa3c0c0950682b0bc266bc#ws2812b-neopixels-driven-by-python.
 
 Now edit `/etc/rc.local` and insert the following lines so that OpenPhone gets started automatically upon each boot:
 
@@ -83,36 +102,3 @@ Additional keys may be required in the future.
 ## Test run
 
 Run `/etc/rc.local`. OpenPhone should start.
-
-## Troubleshooting
-
-As of late 2019, I am getting
-
-```
-root@orangepizero:~/OpenPhone# /etc/rc.local 
-root@orangepizero:~/OpenPhone# Traceback (most recent call last):
-  File "/root/OpenPhone/openphone.py", line 496, in <module>
-    spi.open(1,0) # For Neopixels
-IOError: [Errno 2] No such file or directory
-Shutting down
-Error in atexit._run_exitfuncs:
-Traceback (most recent call last):
-  File "/usr/lib/python2.7/atexit.py", line 24, in _run_exitfuncs
-    func(*targs, **kargs)
-  File "/root/OpenPhone/openphone.py", line 104, in shutdown
-    neopixels_off()
-  File "/root/OpenPhone/openphone.py", line 233, in neopixels_off
-    ws2812.write2812(spi, [[0,0,0]]*16)
-AttributeError: 'module' object has no attribute 'write2812'
-Error in sys.exitfunc:
-Traceback (most recent call last):
-  File "/usr/lib/python2.7/atexit.py", line 24, in _run_exitfuncs
-    func(*targs, **kargs)
-  File "/root/OpenPhone/openphone.py", line 104, in shutdown
-    neopixels_off()
-  File "/root/OpenPhone/openphone.py", line 233, in neopixels_off
-    ws2812.write2812(spi, [[0,0,0]]*16)
-AttributeError: 'module' object has no attribute 'write2812'
-```
-
-Why? possibly I must not use `sudo pip install ws2812` but `wget https://raw.githubusercontent.com/joosteto/ws2812-spi/master/ws2812.py`.
