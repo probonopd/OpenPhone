@@ -1,6 +1,6 @@
 # Installation
 
-This page describes the installation of OpenPhone on an Orange Pi Zero. It may run on other hardware as well, such as Raspberr Pi, but this has not been tested yet. Feel free to send pull requests to improve and expand this documentation.
+This page describes the installation of OpenPhone on an Orange Pi Zero. It may run on other hardware as well, such as Raspberr Pi, but this has not been tested yet. Feel free to send pull requests to improve and expand this documentation. __TODO:__ Nake fully embedded images using OpenWrt or MiZy or something else.
 
 ## Install Armbian
 
@@ -14,7 +14,9 @@ Log into the machine as root. Armbian will ask you to set a new password which y
 
 ```
 apt update
-apt -y install git libttspico-utils python-lxml python-requests python-flask python-pyaudio mpd python-mpd python-configparser
+apt -y install git libttspico-utils python-lxml python-requests python-flask python-pyaudio mpd python-mpd python-configparser python-pip python-setuptools
+sudo pip install wheel
+sudo pip install flask-bootstrap
 ```
 
 ## Install OpenPhone
