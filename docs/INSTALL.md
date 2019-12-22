@@ -14,9 +14,12 @@ Log into the machine as root. Armbian will ask you to set a new password which y
 
 ```
 apt update
-apt -y install git libttspico-utils python-lxml python-requests python-flask python-pyaudio mpd python-mpd python-configparser python-pip python-setuptools
+apt -y install git libttspico-utils python-dev python-lxml python-requests python-flask python-pyaudio mpd python-mpd python-configparser python-pip python-setuptools libhidapi-libusb0
 sudo pip install wheel
 sudo pip install flask-bootstrap
+sudo pip install spidev
+sudo pip install ws2812
+sudo pip install hid
 ```
 
 ## Install OpenPhone
@@ -72,3 +75,36 @@ Additional keys may be required in the future.
 ## Test run
 
 Run `/etc/rc.local`. OpenPhone should start.
+
+## Troubleshooting
+
+As of late 2019, I am getting
+
+```
+root@orangepizero:~/OpenPhone# /etc/rc.local 
+root@orangepizero:~/OpenPhone# Traceback (most recent call last):
+  File "/root/OpenPhone/openphone.py", line 496, in <module>
+    spi.open(1,0) # For Neopixels
+IOError: [Errno 2] No such file or directory
+Shutting down
+Error in atexit._run_exitfuncs:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/atexit.py", line 24, in _run_exitfuncs
+    func(*targs, **kargs)
+  File "/root/OpenPhone/openphone.py", line 104, in shutdown
+    neopixels_off()
+  File "/root/OpenPhone/openphone.py", line 233, in neopixels_off
+    ws2812.write2812(spi, [[0,0,0]]*16)
+AttributeError: 'module' object has no attribute 'write2812'
+Error in sys.exitfunc:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/atexit.py", line 24, in _run_exitfuncs
+    func(*targs, **kargs)
+  File "/root/OpenPhone/openphone.py", line 104, in shutdown
+    neopixels_off()
+  File "/root/OpenPhone/openphone.py", line 233, in neopixels_off
+    ws2812.write2812(spi, [[0,0,0]]*16)
+AttributeError: 'module' object has no attribute 'write2812'
+```
+
+Why?
