@@ -8,6 +8,11 @@ Download and install **[Armbian](https://www.armbian.com/orange-pi-zero/)** for 
 
 Optionally make it read-only using overlayroot as described [here](https://gist.github.com/probonopd/97f6826cc5aa3c0c0950682b0bc266bc). In this case don't forget to chroot into the rw system before executing the following steps.
 
+## Enable SPI
+
+add my user to spi group
+enable SPI interface through raspi-config
+
 ## Install dependencies
 
 __NOTE:__ This section may not be complete. Feel free to send pull requests to improve and expand this documentation.
@@ -20,7 +25,7 @@ apt -y install git libttspico-utils python-dev python-lxml python-requests pytho
 sudo pip install wheel
 sudo pip install flask-bootstrap
 sudo pip install spidev
-sudo pip install ws2812
+# sudo pip install ws2812
 sudo pip install hid
 ```
 
@@ -33,6 +38,7 @@ cd /root
 git clone https://github.com/probonopd/OpenPhone
 cd OpenPhone
 # Get _pjsua.so and pjsua.py from https://github.com/probonopd/pjsua-static/releases and put into this directory
+wget https://raw.githubusercontent.com/joosteto/ws2812-spi/master/ws2812.py
 ```
 
 Now edit `/etc/rc.local` and insert the following lines so that OpenPhone gets started automatically upon each boot:
@@ -109,4 +115,4 @@ Traceback (most recent call last):
 AttributeError: 'module' object has no attribute 'write2812'
 ```
 
-Why?
+Why? possibly I must not use `sudo pip install ws2812` but `wget https://raw.githubusercontent.com/joosteto/ws2812-spi/master/ws2812.py`.
